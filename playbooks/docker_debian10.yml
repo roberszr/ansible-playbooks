@@ -13,7 +13,7 @@
 
    - name: Install prerequisites
      apt: name={{item}} state=latest update_cache=yes
-     loop: ['apt-transport-https', 'ca-certificates', 'curl', 'gnupg2', 'software-properties-common']
+     loop: ['apt-transport-https', 'ca-certificates', 'curl', 'gnupg2', 'software-properties-common', 'python-pip', 'python-setuptools']
 
    - name: Add Docker GPG and Key
      apt_key:

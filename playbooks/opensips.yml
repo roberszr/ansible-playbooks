@@ -1,0 +1,48 @@
+###################################################################################
+# VoiceMT ommunity Playbooks
+# Playbook: Dependencies for an VoIP server, as well Asterisk or Opensips
+# Install some utilities
+# Note: In Irontec ther is no buster repository, use stretch instead.
+#
+####################################################################################
+
+- hosts: opensips
+  become: yes
+  vars:
+   debian_version: buster
+  tasks:
+   - name: Install Irontec Repository Keys
+     apt_key:
+      url: http://packages.irontec.com/public.key
+      state: present
+
+   - name: Install Irontec Repostitories
+     apt_repository:
+      repo: deb http://packages.irontec.com/debian stretch main
+      state: present
+      filename: "irontec_debian_buster"
+      update_cache: yes
+
+   - name: Install SNGREP utility
+     apt: name=sngrep update_cache=yes
+
+   - name: Install Debian Utilities
+     apt: name={{ item }} update_cache=yes
+     loop: ['mlocate','dos2unix', 'git', 'wget', 'curl']
+
+   - name: Create mlocate database
+     command: updatedb
+
+   - name: Install OpenSips deb repository
+     apt_key:
+      keyserver: keyserver.ubuntu.com
+      id: 049AD65B
+
+   - name: Add opensips debian source
+     apt_repository:
+      repo: deb http://apt.opensips.org buster 2.4-releases
+      state: present
+      filename: opensips.repo
+
+   - name: Install opensips
+     apt: name=opensips update_cache=yes state=present
